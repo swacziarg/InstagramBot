@@ -38,7 +38,7 @@ export function importInfluencersCsv(file) {
   const body = new FormData();
   body.append("file", file);
 
-  return request("/import-csv", {
+  return request("/influencers/import", {
     method: "POST",
     body,
   });
@@ -58,5 +58,12 @@ export function createQueueItems(usernames, action, notes) {
 export function completeQueueItem(taskId) {
   return request(`/queue/${taskId}/complete`, {
     method: "POST",
+  });
+}
+
+export function updateQueueItemStatus(taskId, status) {
+  return request(`/queue/${taskId}/status`, {
+    method: "PATCH",
+    body: JSON.stringify({ status }),
   });
 }

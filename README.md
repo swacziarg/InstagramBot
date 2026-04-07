@@ -37,31 +37,35 @@ npm run dev
 
 Open `http://localhost:5173`.
 
-## Import a real influencer catalog
+## Import influencers from CSV
 
 The fastest way to replace the starter dataset is to import a CSV from the dashboard or with the API.
 
-Expected columns:
+Required columns:
 
 ```csv
-username,followers,niche,engagement,email
-fitnessguy,45000,fitness,3.2,fitness@email.com
+username,followers,niche
+fitnessguy,45000,fitness
 ```
 
 Optional extra columns:
 
+- `engagement` or `engagement_rate`
+- `email`
 - `profile_url`
 - `tags` using `|` or `;` as separators
 - `source`
 
+The importer also accepts common header aliases such as `handle`, `followers_count`, and `category`.
+
 API example:
 
 ```bash
-curl -L -X POST http://127.0.0.1:8000/import-csv \
+curl -L -X POST http://127.0.0.1:8000/influencers/import \
   -F "file=@/absolute/path/to/influencers.csv"
 ```
 
-Each import replaces `data/influencer_catalog.json` and refreshes the cached results shown in the UI.
+Each import replaces both `data/influencer_catalog.json` and `data/influencers.json`.
 
 ## Manual review browser
 

@@ -5,6 +5,7 @@ from pathlib import Path
 from bot.config import DATA_DIR
 from bot.models import Influencer
 from bot.providers.base import InfluencerProvider
+from bot.services.scoring_service import ScoringService
 from bot.storage import JsonStore
 
 
@@ -14,6 +15,7 @@ CATALOG_PATH = DATA_DIR / "influencer_catalog.json"
 class MockInfluencerProvider(InfluencerProvider):
     def __init__(self, catalog_path: Path = CATALOG_PATH) -> None:
         self.store = JsonStore(catalog_path, default=[])
+        self.scorer = ScoringService()
 
     def search(self, niche: str) -> list[Influencer]:
         needle = niche.strip().lower()
@@ -31,6 +33,4 @@ class MockInfluencerProvider(InfluencerProvider):
             if needle in haystack:
                 matches.append(Influencer.model_validate(record))
 
-        matches.sort(key=lambda item: item.followers_count, reverse=True)
-        return matches
-
+        return self.scorer.prepare_results(matches, query=niche)

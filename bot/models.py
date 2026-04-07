@@ -15,6 +15,7 @@ class Influencer(BaseModel):
     tags: list[str] = Field(default_factory=list)
     engagement_rate: float | None = Field(default=None, ge=0, le=100)
     email: str | None = None
+    score: float = Field(default=0, ge=0, le=100)
     source: str = "mock_catalog"
 
 
@@ -51,6 +52,15 @@ class QueueCreateRequest(BaseModel):
     notes: str | None = Field(default=None, max_length=200)
 
 
+class QueueStatusUpdateRequest(BaseModel):
+    status: QueueTaskStatus
+
+
 class QueueCompleteResponse(BaseModel):
+    task: QueueTask
+    message: str
+
+
+class QueueStatusUpdateResponse(BaseModel):
     task: QueueTask
     message: str

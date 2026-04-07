@@ -3,14 +3,30 @@ import SearchForm from "./components/SearchForm";
 import InfluencerTable from "./components/InfluencerTable";
 import QueuePanel from "./components/QueuePanel";
 import {
-  completeQueueItem,
   createQueueItems,
   fetchConfig,
   fetchInfluencers,
   fetchQueue,
   importInfluencersCsv,
   searchInfluencers,
+  updateQueueItemStatus,
 } from "./lib/api";
+
+function buildLatestTaskByUsername(tasks) {
+  return tasks.reduce((summary, task) => {
+    const existingTask = summary[task.influencer_username];
+    const currentTimestamp = Date.parse(task.created_at);
+    const existingTimestamp = existingTask
+      ? Date.parse(existingTask.created_at)
+      : 0;
+
+    if (!existingTask || currentTimestamp >= existingTimestamp) {
+      summary[task.influencer_username] = task;
+    }
+
+    return summary;
+  }, {});
+}
 
 export default function App() {
   const [config, setConfig] = useState(null);
@@ -23,9 +39,10 @@ export default function App() {
   const [isSearching, setIsSearching] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
   const [isQueueing, setIsQueueing] = useState(false);
-  const [isCompleting, setIsCompleting] = useState(false);
+  const [activeTaskId, setActiveTaskId] = useState(null);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const latestTaskByUsername = buildLatestTaskByUsername(tasks);
 
   async function loadInitialData() {
     try {
@@ -50,11 +67,13 @@ export default function App() {
     event.preventDefault();
     setIsSearching(true);
     setError("");
+    setNotice("");
 
     try {
       const response = await searchInfluencers(niche.trim());
       setInfluencers(response.items);
       setSelectedUsernames([]);
+      setNotice(`Loaded ${response.count} creator profiles for ${niche.trim()}.`);
     } catch (searchError) {
       setError(searchError.message);
     } finally {
@@ -90,8 +109,13 @@ export default function App() {
   }
 
   async function handleQueueSelected() {
+    if (selectedUsernames.length === 0) {
+      return;
+    }
+
     setIsQueueing(true);
     setError("");
+    setNotice("");
 
     try {
       await createQueueItems(selectedUsernames, queueAction, queueNotes.trim() || null);
@@ -99,6 +123,13 @@ export default function App() {
       setTasks(queueData.items);
       setSelectedUsernames([]);
       setQueueNotes("");
+      setNotice(
+        `Added ${selectedUsernames.length} creator${
+          selectedUsernames.length === 1 ? "" : "s"
+        } to ${queueAction.replaceAll("_", " ")}. Queue now holds ${
+          queueData.count
+        } task${queueData.count === 1 ? "" : "s"}.`,
+      );
     } catch (queueError) {
       setError(queueError.message);
     } finally {
@@ -106,18 +137,20 @@ export default function App() {
     }
   }
 
-  async function handleComplete(taskId) {
-    setIsCompleting(true);
+  async function handleTaskStatusChange(taskId, status) {
+    setActiveTaskId(taskId);
     setError("");
+    setNotice("");
 
     try {
-      await completeQueueItem(taskId);
+      await updateQueueItemStatus(taskId, status);
       const queueData = await fetchQueue();
       setTasks(queueData.items);
-    } catch (completeError) {
-      setError(completeError.message);
+      setNotice(`Task moved to ${status.replaceAll("_", " ")}.`);
+    } catch (updateError) {
+      setError(updateError.message);
     } finally {
-      setIsCompleting(false);
+      setActiveTaskId(null);
     }
   }
 
@@ -168,7 +201,9 @@ export default function App() {
         <InfluencerTable
           influencers={influencers}
           selectedUsernames={selectedUsernames}
+          onSelectionChange={setSelectedUsernames}
           onToggleUser={toggleUser}
+          latestTaskByUsername={latestTaskByUsername}
           queueAction={queueAction}
           onQueueActionChange={setQueueAction}
           queueNotes={queueNotes}
@@ -179,8 +214,8 @@ export default function App() {
 
         <QueuePanel
           tasks={tasks}
-          onComplete={handleComplete}
-          isCompleting={isCompleting}
+          onStatusChange={handleTaskStatusChange}
+          activeTaskId={activeTaskId}
         />
       </section>
     </main>

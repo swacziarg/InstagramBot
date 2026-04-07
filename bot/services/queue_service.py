@@ -72,12 +72,19 @@ class QueueService:
         return new_tasks
 
     def complete_task(self, task_id: str) -> QueueTask:
+        return self.update_task_status(task_id, QueueTaskStatus.completed)
+
+    def update_task_status(
+        self,
+        task_id: str,
+        status: QueueTaskStatus,
+    ) -> QueueTask:
         tasks = self.list_tasks()
         updated_task: QueueTask | None = None
 
         for task in tasks:
             if task.id == task_id:
-                task.status = QueueTaskStatus.completed
+                task.status = status
                 updated_task = task
                 break
 
@@ -99,4 +106,3 @@ class QueueService:
 
     def _save(self, tasks: list[QueueTask]) -> None:
         self.store.write([task.model_dump(mode="json") for task in tasks])
-

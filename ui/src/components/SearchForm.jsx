@@ -49,7 +49,7 @@ export default function SearchForm({
         </form>
 
         <form className="form-block" onSubmit={handleImport}>
-          <label htmlFor="catalog-upload">Catalog CSV</label>
+          <label htmlFor="catalog-upload">Influencer CSV</label>
           <div className="search-row">
             <input
               id="catalog-upload"
@@ -64,8 +64,9 @@ export default function SearchForm({
             </button>
           </div>
           <p className="supporting-text">
-            Expected columns: username, followers, niche, engagement, email.
-            Importing replaces the stored catalog and refreshes the workspace.
+            Required columns: username, followers, niche. Optional columns:
+            engagement, email, profile_url, tags, source. Importing replaces
+            the stored influencer dataset.
           </p>
         </form>
       </div>

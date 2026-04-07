@@ -5,6 +5,7 @@ from pathlib import Path
 from bot.config import DATA_DIR
 from bot.models import Influencer
 from bot.providers.base import InfluencerProvider
+from bot.services.scoring_service import ScoringService
 from bot.storage import JsonStore
 
 
@@ -16,17 +17,27 @@ class SearchService:
         self,
         provider: InfluencerProvider,
         results_path: Path = INFLUENCERS_PATH,
+        scorer: ScoringService | None = None,
     ) -> None:
         self.provider = provider
         self.store = JsonStore(results_path, default=[])
+        self.scorer = scorer or ScoringService()
 
     def search(self, niche: str) -> list[Influencer]:
         results = self.provider.search(niche)
-        self.replace_results(results)
-        return results
+        return self.replace_results(results, query=niche)
 
     def list_results(self) -> list[Influencer]:
-        return [Influencer.model_validate(item) for item in self.store.read()]
+        items = [Influencer.model_validate(item) for item in self.store.read()]
+        return self.scorer.prepare_results(items)
 
-    def replace_results(self, results: list[Influencer]) -> None:
-        self.store.write([result.model_dump(mode="json") for result in results])
+    def replace_results(
+        self,
+        results: list[Influencer],
+        query: str | None = None,
+    ) -> list[Influencer]:
+        prepared_results = self.scorer.prepare_results(results, query=query)
+        self.store.write(
+            [result.model_dump(mode="json") for result in prepared_results]
+        )
+        return prepared_results
