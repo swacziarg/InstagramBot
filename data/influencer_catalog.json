@@ -1,0 +1,57 @@
+[
+  {
+    "username": "fitwithmaya",
+    "followers": "214K",
+    "followers_count": 214000,
+    "profile_url": "https://example.com/fitwithmaya",
+    "niche": "fitness",
+    "tags": ["fitness", "wellness", "training"],
+    "source": "mock_catalog"
+  },
+  {
+    "username": "coachjordn",
+    "followers": "148K",
+    "followers_count": 148000,
+    "profile_url": "https://example.com/coachjordn",
+    "niche": "fitness",
+    "tags": ["fitness", "strength", "nutrition"],
+    "source": "mock_catalog"
+  },
+  {
+    "username": "chainbrief",
+    "followers": "301K",
+    "followers_count": 301000,
+    "profile_url": "https://example.com/chainbrief",
+    "niche": "crypto",
+    "tags": ["crypto", "web3", "markets"],
+    "source": "mock_catalog"
+  },
+  {
+    "username": "defiwithlea",
+    "followers": "96K",
+    "followers_count": 96000,
+    "profile_url": "https://example.com/defiwithlea",
+    "niche": "crypto",
+    "tags": ["crypto", "defi", "education"],
+    "source": "mock_catalog"
+  },
+  {
+    "username": "focusbynoah",
+    "followers": "180K",
+    "followers_count": 180000,
+    "profile_url": "https://example.com/focusbynoah",
+    "niche": "productivity",
+    "tags": ["productivity", "systems", "creator"],
+    "source": "mock_catalog"
+  },
+  {
+    "username": "makerjournal",
+    "followers": "122K",
+    "followers_count": 122000,
+    "profile_url": "https://example.com/makerjournal",
+    "niche": "productivity",
+    "tags": ["productivity", "business", "ops"],
+    "source": "mock_catalog"
+  }
+]
+

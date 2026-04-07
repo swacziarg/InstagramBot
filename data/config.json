@@ -1,0 +1,12 @@
+{
+  "limits": {
+    "searches_per_hour": 30,
+    "manual_review_sessions_per_hour": 10
+  },
+  "queue": {
+    "min_delay_seconds": 90,
+    "max_delay_seconds": 240,
+    "max_tasks_per_hour": 20
+  }
+}
+

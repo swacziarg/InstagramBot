@@ -1,0 +1,28 @@
+[
+  {
+    "username": "fitwithmaya",
+    "followers": "214K",
+    "followers_count": 214000,
+    "profile_url": "https://example.com/fitwithmaya",
+    "niche": "fitness",
+    "tags": [
+      "fitness",
+      "wellness",
+      "training"
+    ],
+    "source": "mock_catalog"
+  },
+  {
+    "username": "coachjordn",
+    "followers": "148K",
+    "followers_count": 148000,
+    "profile_url": "https://example.com/coachjordn",
+    "niche": "fitness",
+    "tags": [
+      "fitness",
+      "strength",
+      "nutrition"
+    ],
+    "source": "mock_catalog"
+  }
+]
